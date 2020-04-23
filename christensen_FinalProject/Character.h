@@ -17,22 +17,22 @@ protected:
 	Ability* ability3;
 	Ability* abilityUltimate;
 
-	Character* target;
-	void* enemyTeam;
+	std::vector<Character*>* enemyTeam;
 
 public:
+	Character* target;
+
 	Character(const std::string& name, const CharacterStats& stats);
 	~Character();
 
-	void setEnemyTeam(void* enemyTeam);
+	void setEnemyTeam(std::vector<Character*>* enemyTeam);
 
 	std::string name;
 	CharacterStats stats;
 
 	void selectTarget(Character* who);
-	void selectRandomTarget();
-	void selectRandomTarget(void* pool);
-	inline Character* getTarget() const;
+	void markForNewTarget();
+	inline Character* getTarget();
 
 	void takeDamage(const Damage& damage, Character* const source, Logger& logger, const Ability* const how);
 	inline bool isDead() const;

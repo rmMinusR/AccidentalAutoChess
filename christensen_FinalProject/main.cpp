@@ -218,5 +218,5 @@ void drawTeams(const Team& a, const Team& b, int menuIndex)
 }
 
 void drawLog(const Logger& log) {
-	log.renderTail(sf::cgetw() - 100, sf::cgeth()-10).blit(100, 10);
+	log.renderTail(sf::cgetw() - 100, sf::cgeth()-10).blit(100, 8);
 }

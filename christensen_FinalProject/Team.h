@@ -16,10 +16,9 @@ public:
 	void addMember(Character* member);
 
 	bool checkIsTeamDead() const;
-	Character* getRandomAlive() const;
+	Character* getRandomAlive();
 
 	void resetCombatState();
-	void resetCombatState(Team* enemyTeam);
 	void simulate(const time_t & start, const time_t & end, Logger& logger);
 
 	Team();

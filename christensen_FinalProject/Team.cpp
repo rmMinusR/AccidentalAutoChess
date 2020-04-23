@@ -21,12 +21,14 @@ bool Team::checkIsTeamDead() const
 	return true;
 }
 
-Character* Team::getRandomAlive() const
+Character* Team::getRandomAlive()
 {
 	int n_alive = 0;
 	for (Character* c : members) {
 		if (!c->isDead()) n_alive++;
 	}
+
+	if (n_alive == 0) return nullptr;
 
 	int ind = rand() % n_alive;
 	int i = 0;
@@ -39,25 +41,23 @@ Character* Team::getRandomAlive() const
 
 void Team::resetCombatState()
 {
-	resetCombatState(enemy);
-}
-
-void Team::resetCombatState(Team* enemyTeam)
-{
 	for (Character* c : members) {
 		c->resetCombatState();
-		c->selectRandomTarget(enemyTeam);
+		c->selectTarget(enemy->getRandomAlive());
 	}
 }
 
 void Team::simulate(const time_t & start, const time_t & end, Logger& logger)
 {
-	for (Character* c : members) c->sample(start, end, logger);
+	for (Character* c : members) {
+		if (c->target == nullptr || c->target->isDead()) c->target = enemy->getRandomAlive();
+		c->sample(start, end, logger);
+	}
 }
 
 Team::Team()
 {
-
+	enemy = nullptr;
 }
 
 Team::~Team()

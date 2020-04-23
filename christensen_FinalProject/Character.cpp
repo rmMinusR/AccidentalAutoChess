@@ -31,9 +31,9 @@ Character::~Character()
 	if (enemyTeam != nullptr) delete enemyTeam;
 }
 
-void Character::setEnemyTeam(void* enemyTeam)
+void Character::setEnemyTeam(std::vector<Character*>* enemyTeam)
 {
-	if(static_cast<Team*>(enemyTeam)) this->enemyTeam = enemyTeam;
+	this->enemyTeam = enemyTeam;
 }
 
 void Character::selectTarget(Character* who)
@@ -41,26 +41,20 @@ void Character::selectTarget(Character* who)
 	this->target = who;
 }
 
-void Character::selectRandomTarget()
+void Character::markForNewTarget()
 {
-	if(enemyTeam) selectRandomTarget(static_cast<Team*>(enemyTeam));
+	selectTarget(nullptr);
 }
 
-void Character::selectRandomTarget(void* pool)
-{
-	if (static_cast<Team*>(pool)) {
-		Team* t = static_cast<Team*>(pool);
-		if (!t->checkIsTeamDead()) selectTarget(t->getRandomAlive());
-	}
-}
-
-Character* Character::getTarget() const
+Character* Character::getTarget()
 {
 	return target;
 }
 
 void Character::takeDamage(const Damage& damage, Character* const source, Logger& logger, const Ability* const how)
 {
+	if (this == nullptr) return;
+
 	if (damage.amount <= 0) return;
 
 	//Find the appropriate resistance
@@ -76,7 +70,7 @@ void Character::takeDamage(const Damage& damage, Character* const source, Logger
 	if (isDead()) {
 		stats.health = 0;
 		logger << (source->name + " has killed " + name);
-		source->selectRandomTarget();
+		source->markForNewTarget();
 	}
 }
 
@@ -90,7 +84,7 @@ void Character::sample(const time_t & start, const time_t & end, Logger & logger
 	if (isDead()) return;
 	if (target == nullptr) return;
 
-	if (target->isDead()) selectRandomTarget();
+	if (target->isDead()) markForNewTarget();
 
 	if (basicAttack     != nullptr) target->takeDamage(basicAttack    ->sample(&stats, start, end), this, logger, basicAttack);
 	if (ability1        != nullptr) target->takeDamage(ability1       ->sample(&stats, start, end), this, logger, ability1);

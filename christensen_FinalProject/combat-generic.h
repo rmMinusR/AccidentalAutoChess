@@ -15,7 +15,7 @@ struct Damage {
 	Damage(DamageType type, float amount);
 };
 
-struct CharacterStats { //Stats copied from Lv.1 Katarina
+struct CharacterStats { //Default stats copied from Lv.1 Katarina
 	float          health   = 750;
 	float      max_health   = 750;
 	float physical_resist   =  28;

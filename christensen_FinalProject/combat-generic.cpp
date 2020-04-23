@@ -1,4 +1,5 @@
 #include "combat-generic.h"
+#include "Character.h"
 
 Damage::Damage() : Damage(DamageType::TRUE, 0) {}
 

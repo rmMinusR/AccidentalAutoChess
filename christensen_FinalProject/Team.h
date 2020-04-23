@@ -1,17 +1,26 @@
 #pragma once
 
 #include <vector>
+#include <ctime>
 
 #include "Character.h"
 
 class Team {
+private:
+	Team* enemy;
+
 public:
-	std::vector< Character* > members;
+	void setEnemy(Team* enemy);
+
+	std::vector<Character*> members;
+	void addMember(Character* member);
 
 	bool checkIsTeamDead() const;
+	Character* getRandomAlive() const;
 
 	void resetCombatState();
-	void simulate(const float& start, const float& end);
+	void resetCombatState(Team* enemyTeam);
+	void simulate(const time_t & start, const time_t & end, Logger& logger);
 
 	Team();
 	~Team();

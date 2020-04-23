@@ -1,5 +1,18 @@
 #include "Team.h"
 
+#include <random>
+
+void Team::setEnemy(Team* enemy)
+{
+	this->enemy = enemy;
+}
+
+void Team::addMember(Character* member)
+{
+	members.push_back(member);
+	member->setEnemyTeam(&members);
+}
+
 bool Team::checkIsTeamDead() const
 {
 	for (Character* c : members) {
@@ -8,14 +21,38 @@ bool Team::checkIsTeamDead() const
 	return true;
 }
 
-void Team::resetCombatState()
+Character* Team::getRandomAlive() const
 {
-	for (Character* c : members) c->resetCombatState();
+	int n_alive = 0;
+	for (Character* c : members) {
+		if (!c->isDead()) n_alive++;
+	}
+
+	int ind = rand() % n_alive;
+	int i = 0;
+	while (ind > 0) {
+		i++;
+		if(!members[i]->isDead()) ind--;
+	}
+	return members[i];
 }
 
-void Team::simulate(const float& start, const float& end)
+void Team::resetCombatState()
 {
-	for (Character* c : members) c->sample(start, end);
+	resetCombatState(enemy);
+}
+
+void Team::resetCombatState(Team* enemyTeam)
+{
+	for (Character* c : members) {
+		c->resetCombatState();
+		c->selectRandomTarget(enemyTeam);
+	}
+}
+
+void Team::simulate(const time_t & start, const time_t & end, Logger& logger)
+{
+	for (Character* c : members) c->sample(start, end, logger);
 }
 
 Team::Team()
@@ -33,13 +70,9 @@ void Team::renderAt(const int& x, const int& y, const int& selected) const
 {
 	int w = 0, h = -1; //Used for calculating the final screenspace of the Team image
 	std::vector<sf::StyledTextBlock> rendered_character_images;
-	for (int i = 0; i < members.size(); i++) {
+	for (Character* c : members) {
 		//Fetch and render
-		Character* c = members[i];
 		sf::StyledTextBlock char_img = c->render();
-
-		//Gray it out if something else is currently selected
-		if (selected >= 0 && i != selected) char_img.fillStyle(sf::TextStyle(0, 0, 0, 1), 0, 0, char_img.width-1, char_img.height-1);
 		rendered_character_images.push_back(char_img);
 
 		//Calculate the screenspace the Team image requires
@@ -49,8 +82,15 @@ void Team::renderAt(const int& x, const int& y, const int& selected) const
 
 	sf::StyledTextBlock rendered_team_image(w+2, h+2); //Padded by 1 character on all sides
 	int iy = 1;
-	for (sf::StyledTextBlock char_img : rendered_character_images) {
+	for (int i = 0; i < rendered_character_images.size(); i++) {
+		sf::StyledTextBlock char_img = rendered_character_images[i];
 		char_img.blit(rendered_team_image, 1, iy);
+		
+		//If selected, render a border
+		if (i == selected) {
+			rendered_team_image.drawBox(sf::TextStyle(), 0, iy-1, char_img.width+1, iy+char_img.height);
+		}
+
 		iy += char_img.height + 1;
 	}
 

@@ -1,4 +1,5 @@
 #include "Character.h"
+#include "Team.h"
 
 #include <random>
 
@@ -13,17 +14,26 @@ Character::Character(const std::string& name, const CharacterStats& stats)
 
 	this->name = name;
 	this->stats = stats;
+
+	basicAttack = new BasicAttack(& this->stats);
 }
 
 Character::~Character()
 {
-	if (basicAttack) delete basicAttack;
-	if (ability1) delete ability1;
-	if (ability2) delete ability2;
-	if (ability3) delete ability3;
-	if (abilityUltimate) delete abilityUltimate;
+	if (basicAttack     != nullptr) delete basicAttack;
+	if (ability1        != nullptr) delete ability1;
+	if (ability2        != nullptr) delete ability2;
+	if (ability3        != nullptr) delete ability3;
+	if (abilityUltimate != nullptr) delete abilityUltimate;
 
-	if (target) delete target;
+	if (target != nullptr) delete target;
+
+	if (enemyTeam != nullptr) delete enemyTeam;
+}
+
+void Character::setEnemyTeam(void* enemyTeam)
+{
+	if(static_cast<Team*>(enemyTeam)) this->enemyTeam = enemyTeam;
 }
 
 void Character::selectTarget(Character* who)
@@ -31,9 +41,17 @@ void Character::selectTarget(Character* who)
 	this->target = who;
 }
 
-void Character::selectRandomTarget(std::vector<Character*> pool)
+void Character::selectRandomTarget()
 {
-	selectTarget(pool[rand() % pool.size()]);
+	if(enemyTeam) selectRandomTarget(static_cast<Team*>(enemyTeam));
+}
+
+void Character::selectRandomTarget(void* pool)
+{
+	if (static_cast<Team*>(pool)) {
+		Team* t = static_cast<Team*>(pool);
+		if (!t->checkIsTeamDead()) selectTarget(t->getRandomAlive());
+	}
 }
 
 Character* Character::getTarget() const
@@ -41,7 +59,7 @@ Character* Character::getTarget() const
 	return target;
 }
 
-inline void Character::takeDamage(const Damage& damage)
+void Character::takeDamage(const Damage& damage, const Character* const source, Logger& logger, const Ability* const how)
 {
 	//Find the appropriate resistance
 	float resistance = 0;
@@ -49,7 +67,14 @@ inline void Character::takeDamage(const Damage& damage)
 	if (damage.type == DamageType::MAGICAL) resistance = stats.magical_resist;
 
 	//Damage multiplier formula = 100 / (100+resistance)
-	stats.health -= damage.amount * 100 / (100 + resistance);
+	float damageTaken = damage.amount * 100 / (100 + resistance);
+	stats.health -= damageTaken;
+	logger << (source->name+"'s "+how->getName()+" dealt "+std::to_string(damageTaken)+" damage to "+name);
+
+	if (isDead()) {
+		stats.health = 0;
+		logger << (source->name + " has killed " + name);
+	}
 }
 
 inline bool Character::isDead() const
@@ -57,26 +82,29 @@ inline bool Character::isDead() const
 	return stats.health <= 0;
 }
 
-void Character::sample(const float& start, const float& end)
+void Character::sample(const time_t & start, const time_t & end, Logger & logger)
 {
 	if (isDead()) return;
+	if (target == nullptr) return;
 
-	if (basicAttack)     target->takeDamage(basicAttack    ->sample(&stats, start, end));
-	if (ability1)        target->takeDamage(ability1       ->sample(&stats, start, end));
-	if (ability2)        target->takeDamage(ability2       ->sample(&stats, start, end));
-	if (ability3)        target->takeDamage(ability3       ->sample(&stats, start, end));
-	if (abilityUltimate) target->takeDamage(abilityUltimate->sample(&stats, start, end));
+	if (target->isDead()) selectRandomTarget();
+
+	if (basicAttack     != nullptr) target->takeDamage(basicAttack    ->sample(&stats, start, end), this, logger, basicAttack);
+	if (ability1        != nullptr) target->takeDamage(ability1       ->sample(&stats, start, end), this, logger, ability1);
+	if (ability2        != nullptr) target->takeDamage(ability2       ->sample(&stats, start, end), this, logger, ability2);
+	if (ability3        != nullptr) target->takeDamage(ability3       ->sample(&stats, start, end), this, logger, ability3);
+	if (abilityUltimate != nullptr) target->takeDamage(abilityUltimate->sample(&stats, start, end), this, logger, abilityUltimate);
 }
 
 void Character::resetCombatState()
 {
 	stats.health = stats.max_health;
 	
-	if (basicAttack)     basicAttack    ->resetCombatState();
-	if (ability1)        ability1       ->resetCombatState();
-	if (ability2)        ability2       ->resetCombatState();
-	if (ability3)        ability3       ->resetCombatState();
-	if (abilityUltimate) abilityUltimate->resetCombatState();
+	if (basicAttack     != nullptr) basicAttack    ->resetCombatState();
+	if (ability1        != nullptr) ability1       ->resetCombatState();
+	if (ability2        != nullptr) ability2       ->resetCombatState();
+	if (ability3        != nullptr) ability3       ->resetCombatState();
+	if (abilityUltimate != nullptr) abilityUltimate->resetCombatState();
 }
 
 sf::StyledTextBlock Character::render() const

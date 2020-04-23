@@ -3,10 +3,11 @@
 #include <string>
 #include <vector>
 
+#include "sfgr.h"
+
 #include "Ability.h"
 #include "combat-generic.h"
-
-#include "sfgr.h"
+#include "Logger.h"
 
 class Character {
 protected:
@@ -17,21 +18,25 @@ protected:
 	Ability* abilityUltimate;
 
 	Character* target;
+	void* enemyTeam;
 
 public:
 	Character(const std::string& name, const CharacterStats& stats);
 	~Character();
 
+	void setEnemyTeam(void* enemyTeam);
+
 	std::string name;
 	CharacterStats stats;
 
 	void selectTarget(Character* who);
-	void selectRandomTarget(std::vector<Character*> pool);
+	void selectRandomTarget();
+	void selectRandomTarget(void* pool);
 	inline Character* getTarget() const;
 
-	inline void takeDamage(const Damage& damage);
+	void takeDamage(const Damage& damage, const Character* const source, Logger& logger, const Ability* const how);
 	inline bool isDead() const;
-	void sample(const float& start, const float& end);
+	void sample(const time_t & start, const time_t & end, Logger & logger);
 
 	void resetCombatState();
 

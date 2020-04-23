@@ -1,0 +1,30 @@
+Katarina's Basic Attack dealt 42.647060 damage to Kha'zix
+Caitlyn's Basic Attack dealt 45.588234 damage to Kha'zix
+Caitlyn's Piltover Peacemaker dealt 96.029419 damage to Kha'zix
+Kha'zix's Basic Attack dealt 49.218750 damage to Caitlyn
+Kha'zix's Taste Their Fear dealt 221.718735 damage to Caitlyn
+Katarina's Basic Attack dealt 42.647060 damage to Kha'zix
+Caitlyn's Basic Attack dealt 45.588234 damage to Kha'zix
+Kha'zix's Basic Attack dealt 49.218750 damage to Caitlyn
+Katarina's Basic Attack dealt 42.647060 damage to Kha'zix
+Caitlyn's Basic Attack dealt 45.588234 damage to Kha'zix
+Kha'zix's Basic Attack dealt 49.218750 damage to Caitlyn
+Kha'zix's Taste Their Fear dealt 221.718735 damage to Caitlyn
+Kha'zix has killed Caitlyn
+Katarina's Basic Attack dealt 42.647060 damage to Kha'zix
+Kha'zix's Basic Attack dealt 49.218750 damage to Caitlyn
+Kha'zix has killed Caitlyn
+Katarina's Basic Attack dealt 42.647060 damage to Kha'zix
+Kha'zix's Basic Attack dealt 49.218750 damage to Caitlyn
+Kha'zix has killed Caitlyn
+Kha'zix's Taste Their Fear dealt 221.718735 damage to Caitlyn
+Kha'zix has killed Caitlyn
+Katarina's Basic Attack dealt 42.647060 damage to Kha'zix
+Kha'zix's Basic Attack dealt 49.218750 damage to Caitlyn
+Kha'zix has killed Caitlyn
+Katarina's Basic Attack dealt 42.647060 damage to Kha'zix
+Kha'zix's Basic Attack dealt 49.218750 damage to Caitlyn
+Kha'zix has killed Caitlyn
+Katarina's Basic Attack dealt 42.647060 damage to Kha'zix
+Katarina has killed Kha'zix
+Simulation complete!

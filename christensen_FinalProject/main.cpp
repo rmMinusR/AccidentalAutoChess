@@ -4,6 +4,8 @@
 #include "Team.h"
 #include "Logger.h"
 
+#include "PrebuiltCharacters.h"
+
 #include <iostream>
 #include <vector>
 #include <random>
@@ -30,8 +32,8 @@ int main() {
 	teamB.setEnemy(&teamA);
 
 	teamA.addMember(new Character("Katarina", CharacterStats()));
-	teamA.addMember(new Character("Caitlyn",  CharacterStats()));
-	teamB.addMember(new Character("Kha'zix",  CharacterStats()));
+	teamA.addMember(new CharacterCaitlyn());
+	teamB.addMember(new CharacterKhazix());
 
 	teamA.resetCombatState(); teamB.resetCombatState();
 
@@ -40,13 +42,13 @@ int main() {
 	while (programState != PROGRAM_STATE::EXITING) {
 
 		while (programState == PROGRAM_STATE::MENU) {
-			sf::cclear();
+			if (sf::hasResized()) sf::cclear();
 			drawMenu(menuIndex, MENU_ITEMS);
 			drawTeams(teamA, teamB);
 			drawLog(logger);
 
 			//Fetch keyboard input
-			char kb_in = sf::cquerych();
+			char kb_in = sf::cquerycht(1000);
 
 			if (kb_in == -32) { //Charcode preceeding arrow keys
 
@@ -77,13 +79,13 @@ int main() {
 		}
 
 		while (programState == PROGRAM_STATE::SIMULATING) {
-			sf::cclear();
+			if (sf::hasResized()) sf::cclear();
 			drawMenu(menuIndex, MENU_ITEMS);
 			drawTeams(teamA, teamB);
 			drawLog(logger);
 
 			time_t startTime = time();
-			char kb_in = sf::cquerycht(500);
+			char kb_in = sf::cquerycht(200);
 			time_t elapsedTime = time() - startTime;
 
 			teamA.simulate(simulationTime, simulationTime + elapsedTime, logger);
@@ -102,13 +104,13 @@ int main() {
 		}
 
 		while (programState == PROGRAM_STATE::PLAYER_EDIT) {
-			sf::cclear();
+			if(sf::hasResized()) sf::cclear();
 			drawMenu(0, MENU_ITEMS);
 			drawTeams(teamA, teamB, menuIndex);
 			drawLog(logger);
 
 			//Fetch keyboard input
-			char kb_in = sf::cquerych();
+			char kb_in = sf::cquerycht(1000);
 
 			if (kb_in == -32) { //Charcode preceeding arrow keys
 

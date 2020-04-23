@@ -35,6 +35,8 @@ namespace sf {
 	int cgetw();
 	int cgeth();
 
+	bool hasResized();
+
 	void csetcurvis(bool visiblity);
 
 	void cfill(char c, int x1, int y1, int x2, int y2);

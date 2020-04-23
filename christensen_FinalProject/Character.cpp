@@ -59,8 +59,10 @@ Character* Character::getTarget() const
 	return target;
 }
 
-void Character::takeDamage(const Damage& damage, const Character* const source, Logger& logger, const Ability* const how)
+void Character::takeDamage(const Damage& damage, Character* const source, Logger& logger, const Ability* const how)
 {
+	if (damage.amount <= 0) return;
+
 	//Find the appropriate resistance
 	float resistance = 0;
 	if (damage.type == DamageType::PHYSICAL) resistance = stats.physical_resist;
@@ -74,6 +76,7 @@ void Character::takeDamage(const Damage& damage, const Character* const source, 
 	if (isDead()) {
 		stats.health = 0;
 		logger << (source->name + " has killed " + name);
+		source->selectRandomTarget();
 	}
 }
 

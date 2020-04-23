@@ -67,6 +67,17 @@ namespace sf {
 		return csbi.srWindow.Bottom - csbi.srWindow.Top;
 	}
 
+	int lastW, lastH;
+	bool hasResized()
+	{
+		if (lastW != cgetw() || lastH != cgeth()) {
+			lastW = cgetw();
+			lastH = cgeth();
+			return true;
+		}
+		return false;
+	}
+
 	void csetcurvis(bool visiblity)
 	{
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);

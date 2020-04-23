@@ -34,7 +34,7 @@ public:
 	void selectRandomTarget(void* pool);
 	inline Character* getTarget() const;
 
-	void takeDamage(const Damage& damage, const Character* const source, Logger& logger, const Ability* const how);
+	void takeDamage(const Damage& damage, Character* const source, Logger& logger, const Ability* const how);
 	inline bool isDead() const;
 	void sample(const time_t & start, const time_t & end, Logger & logger);
 

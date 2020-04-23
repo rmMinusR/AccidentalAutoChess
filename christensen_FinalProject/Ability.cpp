@@ -45,3 +45,5 @@ Damage BasicAttack::sample(CharacterStats* const stats, const time_t & start, co
 		return Damage(DamageType::PHYSICAL, stats->physical_damage);
 	}
 }
+
+

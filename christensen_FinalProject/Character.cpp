@@ -1,3 +1,24 @@
+/*
+
+Character object. Represents a computer-controlled character which can
+deal and recieve damage.
+Written by Robert Christensen
+
+Certification of Authenticity: This code is mine, written solely by me,
+without assistance from any other individuals.
+
+Copyright 2020. You may use and modify this code as you please,
+but I must recieve authorship credit. Furthermore you may redistribute
+this code only as part of a project--this cannot be redistributed as
+a standalone file.
+
+By running or compiling this code or including it in a project, you fully and
+irrevocably accept responsibility for any and all damage or other
+liabilities that may arise while or after using it. You waive any and
+all right to sue me using these code files as a basis.
+
+*/
+
 #include "Character.h"
 #include "Team.h"
 
@@ -26,9 +47,7 @@ Character::~Character()
 	if (ability3        != nullptr) delete ability3;
 	if (abilityUltimate != nullptr) delete abilityUltimate;
 
-	if (target != nullptr) delete target;
-
-	if (enemyTeam != nullptr) delete enemyTeam;
+	//The pointers target and enemyTeam should NOT be deleted here. Instead they are deleted in ~Team()
 }
 
 void Character::setEnemyTeam(std::vector<Character*>* enemyTeam)

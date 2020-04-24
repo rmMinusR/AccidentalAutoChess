@@ -19,6 +19,7 @@ void drawMenu(int menuState, const std::vector<std::string> menuItems);
 void drawTeams(const Team& a, const Team& b, int menuIndex = -1);
 void drawLog(const Logger& log);
 
+#define resetAll(); { teamA.resetCombatState(); teamB.resetCombatState(); simulationTime = 0; }
 inline long long time() { return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count(); }
 
 int main() {
@@ -68,7 +69,7 @@ int main() {
 				if (kb_in == 13 || kb_in == 32) { // ENTER or SPACE
 					if (menuIndex == 0) { programState = PROGRAM_STATE::PLAYER_EDIT; }
 					if (menuIndex == 1) { programState = PROGRAM_STATE::SIMULATING; }
-					if (menuIndex == 2) { teamA.resetCombatState(); teamB.resetCombatState(); simulationTime = 0; logger << "Simulation reset!"; }
+					if (menuIndex == 2) { resetAll(); logger << "Simulation reset!"; }
 					if (menuIndex == 3) { programState = PROGRAM_STATE::EXITING; }
 				}
 
@@ -104,7 +105,7 @@ int main() {
 		}
 
 		while (programState == PROGRAM_STATE::PLAYER_EDIT) {
-			if(sf::hasResized()) sf::cclear();
+			if (sf::hasResized()) sf::cclear();
 			drawMenu(0, MENU_ITEMS);
 			drawTeams(teamA, teamB, menuIndex);
 			drawLog(logger);
@@ -119,18 +120,18 @@ int main() {
 					menuIndex--;
 				}
 				else if (c == 75) { // LEFT
-					menuIndex -= (teamA.members.size()+teamB.members.size())/2;
+					menuIndex -= (teamA.members.size() + teamB.members.size()) / 2;
 				}
 				else if (c == 80) { // DOWN
 					menuIndex++;
 				}
 				else if (c == 77) { // RIGHT
-					menuIndex += (teamA.members.size()+teamB.members.size())/2;
+					menuIndex += (teamA.members.size() + teamB.members.size()) / 2;
 				}
 
 				int n_options = teamA.members.size() + teamB.members.size() + 4;
-				if(menuIndex >= n_options) menuIndex -= n_options;
-				if(menuIndex < 0)          menuIndex += n_options;
+				if (menuIndex >= n_options) menuIndex -= n_options;
+				if (menuIndex < 0)          menuIndex += n_options;
 			}
 			else { //It isn't a special key, interpret as normal
 
@@ -141,10 +142,12 @@ int main() {
 
 					if (menuIndex == teamA.members.size()) {
 						teamA.addMember(new Character("Katarina", CharacterStats()));
+						resetAll();
 					}
-					
+
 					if (menuIndex == teamA.members.size() + teamB.members.size() + 2) {
 						teamB.addMember(new Character("Katarina", CharacterStats()));
+						resetAll();
 					}
 				}
 
@@ -152,8 +155,11 @@ int main() {
 		}
 
 	}
+	//Write log
 	logger.writeTo("log.txt");
 
+	//Reset console color and exit
+	sf::csetcolc(1, 1, 1, 1);
 	return 0;
 }
 

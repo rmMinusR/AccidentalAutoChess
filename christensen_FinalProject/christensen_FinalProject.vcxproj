@@ -158,6 +158,9 @@
     <ClInclude Include="sfgr.h" />
     <ClInclude Include="Team.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="log.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
